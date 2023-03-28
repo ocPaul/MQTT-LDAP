@@ -1,8 +1,8 @@
 #include <WiFi.h>
 #include <PubSubClient.h>
 #include <Wire.h>
-#include <Adafruit_BME280.h>
 #include <Adafruit_Sensor.h>
+#include <Adafruit_BME280.h>
 #include <iostream>
 #include <cstring>
 #include <DHT.h>
@@ -15,7 +15,7 @@ const char* password = "Monkeeee";
 //const char* mqtt_server = "192.168.1.144";
 const char* mqtt_server = "172.31.200.149";
 
-#define DHT_SENSOR_PIN  21 
+#define DHT_SENSOR_PIN  21
 #define DHT_SENSOR_TYPE DHT11
 
 DHT dht_sensor(DHT_SENSOR_PIN, DHT_SENSOR_TYPE);
@@ -26,7 +26,7 @@ long lastMsg = 0;
 char msg[50];
 int value = 0;
 
-std::string message ="";
+std::string message ="ö";
 char* arry; 
 
 void setup_wifi() {
@@ -71,6 +71,8 @@ void readDHTsensorTemp() {
   if ( isnan(tempC) || isnan(humi)) {
     Serial.println("Failed to read from DHT sensor!");
   } else {
+    message = "test";
+    // "Temperature: " + std::to_string(tempC) + "°C  |   Humidity: " + std::to_string(humi) + "%";
     Serial.print("Humidity: ");
     Serial.print(humi);
     Serial.print("%");
@@ -80,6 +82,7 @@ void readDHTsensorTemp() {
     Serial.print("Temperature: ");
     Serial.print(tempC);
     Serial.print("°C");
+    Serial.println("");
   }
 }
 
@@ -111,15 +114,13 @@ void reconnect() {
   }
 }
 void loop() {
-  //if (!client.connected()) {
-  //  reconnect();
-  //}
+  if (!client.connected()) {
+    reconnect();
+  }
   //client.subscribe("ranztanz");
   //client.loop();
   readDHTsensorTemp();
+  strcpy(arry, message.c_str());
+  client.publish("voltage", arry);
   delay(1000);
-  //std::cout << "Enter your message: ";
-  //std::cin >> message;
-  //strcpy(arry, message.c_str());
-  //client.publish("ranztanz", arry);
 }
