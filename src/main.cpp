@@ -13,7 +13,7 @@ const char* password = "Monkeeee";
 
 // Add your MQTT Broker IP address, example:
 //const char* mqtt_server = "192.168.1.144";
-const char* mqtt_server = "172.31.200.149";
+const char* mqtt_server = "172.31.200.150";
 
 #define DHT_SENSOR_PIN  21
 #define DHT_SENSOR_TYPE DHT11
@@ -26,8 +26,10 @@ long lastMsg = 0;
 char msg[50];
 int value = 0;
 
-std::string message ="ö";
-char* arry; 
+String message_humi = "";
+String message_temp = "";
+String output_humi; 
+String output_temp;
 
 void setup_wifi() {
   delay(10);
@@ -69,13 +71,18 @@ void readDHTsensorTemp() {
 
   // check whether the reading is successful or not
   if ( isnan(tempC) || isnan(humi)) {
-    Serial.println("Failed to read from DHT sensor!");
+    // Serial.println("Failed to read from DHT sensor!");
+    tempC = 187;
+    humi = 187;
   } else {
-    message = "test";
+    //message_humi = "test";
     // "Temperature: " + std::to_string(tempC) + "°C  |   Humidity: " + std::to_string(humi) + "%";
     Serial.print("Humidity: ");
     Serial.print(humi);
     Serial.print("%");
+
+    message_humi = String(humi);
+    message_temp = String(tempC);
 
     Serial.print("  |  ");
 
@@ -100,10 +107,10 @@ void reconnect() {
   while (!client.connected()) {
     Serial.print("Attempting MQTT connection...");
     // Attempt to connect
-    if (client.connect("ESP8266Client")) {
+    if (client.connect("ESP32Client")) {
       Serial.println("connected");
       // Subscribe
-      client.subscribe("esp32/output");
+      //client.subscribe("esp32/output");
     } else {
       Serial.print("failed, rc=");
       Serial.print(client.state());
@@ -120,7 +127,9 @@ void loop() {
   //client.subscribe("ranztanz");
   //client.loop();
   readDHTsensorTemp();
-  strcpy(arry, message.c_str());
-  client.publish("voltage", arry);
+  output_humi = String(message_humi);
+  output_temp = String(message_temp);
+  client.publish("humidity", output_humi.c_str());
+  client.publish("temperature", output_temp.c_str());
   delay(1000);
 }
