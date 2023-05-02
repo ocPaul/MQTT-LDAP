@@ -20,7 +20,7 @@ long lastMsg = 0;
 char msg[50];
 int value = 0;
 
-std::string message ="ö";
+String message ="ö";
 char* arry;
 
 void setup_wifi() {
@@ -87,11 +87,11 @@ void loop() {
   if (!client.connected()) {
    reconnect();
   }
-  message = String(voltage, 4);
-  client.publish("topic/float_value", message.c_str());
-
   analogValue = analogRead(voltInput);
   voltage = analogValue / 4095.0 * 9.25;
-  Serial.println(voltage);
+  // Serial.println(voltage);
+  message = String(voltage, 1);
+  client.publish("voltage", message.c_str());
+
   delay(1000);
 }
