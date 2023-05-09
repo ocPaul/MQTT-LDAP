@@ -40,9 +40,6 @@ void setup_wifi() {
 }
 
 void callback(char* topic, byte* message, unsigned int length) {
-  Serial.print("Value arrived on topic: ");
-  Serial.print(topic);
-  Serial.print(". Value: ");
   String valueTemp;
   
   for (int i = 0; i < length; i++) {
@@ -61,8 +58,8 @@ void reconnect() {
     // Attempt to connect
     if (client.connect("ESP32_Client_controll_LED")) {
       Serial.println("connected");
-      // Subscribe
-      client.subscribe("esp32/output");
+      // Subscribe  
+      client.subscribe("voltage");
     } else {
       Serial.print("failed, rc=");
       Serial.print(client.state());
@@ -89,8 +86,8 @@ void loop() {
   if (!client.connected()) {
    reconnect();
   }
-  client.subscribe("voltage");
   client.loop();
+  Serial.print(voltage);
 
   if (voltage > 3.0) {
     digitalWrite(ledPin1, HIGH);
@@ -99,6 +96,6 @@ void loop() {
     digitalWrite(ledPin1, LOW);
     digitalWrite(ledPin2, HIGH);
   }
-  delay(100);
+  delay(1000);
 }
 
