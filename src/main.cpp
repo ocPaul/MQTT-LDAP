@@ -8,7 +8,7 @@
 const char* ssid = "THAMONKEE";
 const char* password = "Monkeeee";
 
-const char* mqtt_server = "172.31.200.149";
+const char* mqtt_server = "172.31.200.150";
 
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -59,7 +59,7 @@ void reconnect() {
   while (!client.connected()) {
     Serial.print("Attempting MQTT connection...");
     // Attempt to connect
-    if (client.connect("ESP8266Client")) {
+    if (client.connect("ESP32_Client_controll_LED")) {
       Serial.println("connected");
       // Subscribe
       client.subscribe("esp32/output");
