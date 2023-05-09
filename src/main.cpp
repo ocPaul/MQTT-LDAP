@@ -43,11 +43,11 @@ void callback(char* topic, byte* message, unsigned int length) {
   String valueTemp;
   
   for (int i = 0; i < length; i++) {
-    Serial.print((char)message[i]);
+    // Serial.print((char)message[i]);
     valueTemp += (char)message[i];
   }
   // Serial.print(messageTemp);
-  Serial.println();
+  // Serial.println();
   voltage = valueTemp.toFloat();
 }
 
@@ -59,7 +59,7 @@ void reconnect() {
     if (client.connect("ESP32_Client_controll_LED")) {
       Serial.println("connected");
       // Subscribe  
-      client.subscribe("voltage");
+      client.subscribe("voltage", 0);
     } else {
       Serial.print("failed, rc=");
       Serial.print(client.state());
@@ -87,15 +87,18 @@ void loop() {
    reconnect();
   }
   client.loop();
-  Serial.print(voltage);
-
-  if (voltage > 3.0) {
-    digitalWrite(ledPin1, HIGH);
-    digitalWrite(ledPin2, LOW);
+  if (voltage == 0.0){
+      digitalWrite(ledPin1, LOW);
+      digitalWrite(ledPin2, LOW);
   } else {
-    digitalWrite(ledPin1, LOW);
-    digitalWrite(ledPin2, HIGH);
+    if (voltage > 3.0) {
+      digitalWrite(ledPin1, HIGH);
+      digitalWrite(ledPin2, LOW);
+    } else {
+      digitalWrite(ledPin1, LOW);
+      digitalWrite(ledPin2, HIGH);
   }
-  delay(1000);
+
+  }
 }
 
