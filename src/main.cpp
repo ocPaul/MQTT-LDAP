@@ -94,7 +94,7 @@ void readDHTsensorTemp() {
 }
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(9600);
   setup_wifi();
   client.setServer(mqtt_server, 1883);
   client.setCallback(callback);
